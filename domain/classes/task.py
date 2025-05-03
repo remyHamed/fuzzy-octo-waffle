@@ -2,7 +2,7 @@ import datetime
 
 
 class Task:
-    def __init__(self, title, creation_date, resume, is_done):
+    def __init__(self, title :str, creation_date :datetime, resume:str, is_done: bool):
         self.__title = title
         self.__creation_date = creation_date
         self.__resume = resume
