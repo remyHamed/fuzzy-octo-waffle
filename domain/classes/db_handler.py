@@ -6,13 +6,13 @@ from domain.classes.task import Task
 
 class DbHandler():
     
-    def __init__(self):
+    def __init__(self) :
         self.db_path = Path("pomodoro.db")
         self._con = sqlite3.connect(self.db_path)
         self._cur = self._con.cursor()
         self._init_db()
 
-    def _init_db(self):
+    def _init_db(self) -> None:
         self._cur.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,11 +31,12 @@ class DbHandler():
         )
         self._con.commit()
 
-    def get_all_tasks(self, tasks_list :list):
+    def get_all_tasks(self, tasks_list :list) -> list:
         tasks_list.clear()
         self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks")
         for row in self._cur.fetchall():
             task = Task(
+                id=row[0],
                 title=row[1],
                 creation_date=datetime.datetime.fromisoformat(row[2]),
                 resume=row[3],
@@ -45,5 +46,25 @@ class DbHandler():
             
         return tasks_list
     
-    def close(self):
+    def get_task(self, t: Task) -> Task:
+        self.cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks where id = " + str(t._get_id()) + ";")
+        t = self._cur.fetchone()
+        return t
+    
+        
+    def Update_task(self, t: Task, task_list: list) -> list:
+        self.cur.execute(
+            "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
+            (t._get_title(), t._get_creation_date(), t._get_resume(), t._get_is_done(), t._get_id())
+        )
+        self.conn.commit()
+        t = self.get_task(t)
+        for i, task in enumerate(task_list):
+            if task._get_id() == t._get_id():
+                task_list[i] = t
+                break
+        
+        return task_list
+    
+    def close(self) -> None:
         self._con.close()

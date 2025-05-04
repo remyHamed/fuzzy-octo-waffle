@@ -49,12 +49,14 @@ class MainMenu():
                 return True
             case "2":
                 print("modification de task\n")
+                
                 return True
             case "3":
                 print("suppretion de task\n")
                 return True
             case "4":
                 print("fin du programm\n")
+                self._db_h.close()
                 return False
             case _:
                 print("default")
