@@ -1,13 +1,17 @@
 
+from domain.classes.db_handler import DbHandler
 from domain.classes.task import Task
 import datetime
 
 class MainMenu():
     
+    
     def __init__(self):
         super().__init__()
-        self._tasks_list = [Task("test", datetime.datetime.now(), "resume test", False) for i in range(100)]
+        self._db_h = DbHandler()
+        self._tasks_list = list()
     
+
     def display_menu(self) -> None:
         print(" Fuzzy octo waffle\n ")
         print("--- Taper le chiffre qui correspond à l'opperation désirer ---")
@@ -18,6 +22,7 @@ class MainMenu():
 
     
     def display_tasks(self) -> None:
+        self._db_h.get_all_tasks(self._tasks_list)
         if len(self._tasks_list) <= 0:
             return
         for i in self._tasks_list:
@@ -32,19 +37,25 @@ class MainMenu():
     def get_task_list(self) -> None:
         return self.__tasks_list
     
+
     def input_matcher(self, input: str) -> bool:
         match input:
             case "1":
-                print("selection ajout de task")
+                print("selection ajout de task\n")
+                nw_t = Task()
+                nw_t._set_title(self.get_input("titre de la Task\n"))
+                nw_t._set_resume(self.get_input("Description de la Task\n"))
+                self._db_h.save_task(nw_t)
                 return True
             case "2":
-                print("modification de task")
+                print("modification de task\n")
                 return True
             case "3":
-                print("suppretion de task")
+                print("suppretion de task\n")
                 return True
             case "4":
-                print("fin du programm")
+                print("fin du programm\n")
                 return False
             case _:
                 print("default")
+                return True

@@ -1,6 +1,5 @@
-
+from domain.classes.db_handler import DbHandler
 from domain.classes.main_menu import MainMenu
-
 
 class App():
 
@@ -15,7 +14,9 @@ class App():
         while boolean_runner:
             menu_main.display_tasks()
             menu_main.display_menu()
-            boolean_runner = menu_main.input_matcher(menu_main.get_input("taper votre commande"))
+            boolean_runner = menu_main.input_matcher(menu_main.get_input("taper votre commande\n"))
+        
+        print("fin")
        
 
     
