@@ -7,7 +7,12 @@ class App():
     def __init__(self):
         super().__init__()
 
+        self.task_repository = 
+        self.task_service = TaskService(repository=self.repository)
+        self.main_menu = MainMenu(task_service=self.task_service) 
+
     def run(self) -> None:
+
 
         boolean_runner = True
         menu_main = MainMenu()

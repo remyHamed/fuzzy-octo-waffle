@@ -8,6 +8,7 @@ class Task:
         self.__creation_date = creation_date
         self.__resume = resume
         self.__is_done = is_done
+        #due_date: str 
 
     def _get_id(self) -> int:
         return self._id
