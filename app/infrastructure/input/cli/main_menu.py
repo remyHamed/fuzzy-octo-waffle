@@ -1,7 +1,6 @@
 
-from domain.classes.db_handler import DbHandler
-from domain.classes.task import Task
-import datetime
+from app.infrastructure.out.repositories.db_handler import DbHandler
+from domain.models.task import Task
 
 class MainMenu():
     
@@ -35,7 +34,7 @@ class MainMenu():
 
 
     def get_task_list(self) -> None:
-        return self.__tasks_list
+        return self._tasks_list
     
 
     def input_matcher(self, input: str) -> bool:
@@ -49,7 +48,13 @@ class MainMenu():
                 return True
             case "2":
                 print("modification de task\n")
-                
+                id_of_updat_task = self.get_input("selectionner l'id de l'app a modifier\n")
+                t_to_update = Task()
+                for task in self.get_task_list():
+                    if task._get_id() == int(id_of_updat_task):
+                        t_to_update = task
+                    break
+                self._db_h.Update_task(t_to_update, self.get_task_list())
                 return True
             case "3":
                 print("suppretion de task\n")

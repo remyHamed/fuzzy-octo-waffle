@@ -2,7 +2,7 @@ import datetime
 import sqlite3
 from pathlib import Path
 
-from domain.classes.task import Task
+from domain.models.task import Task
 
 class DbHandler():
     
@@ -47,20 +47,21 @@ class DbHandler():
         return tasks_list
     
     def get_task(self, t: Task) -> Task:
-        self.cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks where id = " + str(t._get_id()) + ";")
+        self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks WHERE id=?;", 
+            (str(t._get_id()),)
+        )
         t = self._cur.fetchone()
         return t
-    
         
     def Update_task(self, t: Task, task_list: list) -> list:
-        self.cur.execute(
+        self._cur.execute(
             "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
             (t._get_title(), t._get_creation_date(), t._get_resume(), t._get_is_done(), t._get_id())
         )
-        self.conn.commit()
+        self._con.commit()
         t = self.get_task(t)
-        for i, task in enumerate(task_list):
-            if task._get_id() == t._get_id():
+        for i, task in task_list:
+            if int(task._get_id()) == int(t._get_id()):
                 task_list[i] = t
                 break
         

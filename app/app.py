@@ -1,5 +1,6 @@
-from domain.classes.db_handler import DbHandler
-from domain.classes.main_menu import MainMenu
+
+from app.infrastructure.input.cli.main_menu import MainMenu
+
 
 class App():
 
