@@ -1,11 +1,13 @@
+import datetime
 from pathlib import Path
 import sqlite3
 
+from app.domain.models.task import Task
 from app.dto.requests.create_task_request import CreateTaskRequest
 from app.dto.responses.task_response import TaskResponse
 
 
-class SqliteTaskRepository():
+class TaskRepository():
     
     def __init__(self) :
         self.db_path = Path("pomodoro.db")
@@ -25,23 +27,19 @@ class SqliteTaskRepository():
         """)
         self._con.commit()
 
-    def save_task(self, task: CreateTaskRequest) -> TaskResponse:
+    def save_task(self, task: Task) -> Task:
         self._cur.execute(
             "INSERT INTO tasks (title, creation_date, resume, is_done) VALUES (?, ?, ?, ?)",
             (task.title, task.creation_date, task.resume, task.is_done)
         )
         self._con.commit()
-        return TaskResponse(
-            id=str(self._cur.lastrowid),
-            title=task.title,
-            status="done" if task.is_done else "pending"
-        )
+        return self._cur.fetchone()
 
     def get_all_tasks(self, tasks_list :list) -> list:
         tasks_list.clear()
         self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks")
         for row in self._cur.fetchall():
-            task = Task(
+            task = TaskResponse(
                 id=row[0],
                 title=row[1],
                 creation_date=datetime.datetime.fromisoformat(row[2]),
@@ -59,19 +57,16 @@ class SqliteTaskRepository():
         t = self._cur.fetchone()
         return t
         
-    def Update_task(self, t: Task, task_list: list) -> list:
+    def Update_task(self, t: Task) -> Task:
         self._cur.execute(
             "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
             (t._get_title(), t._get_creation_date(), t._get_resume(), t._get_is_done(), t._get_id())
         )
         self._con.commit()
-        t = self.get_task(t)
-        for i, task in task_list:
-            if int(task._get_id()) == int(t._get_id()):
-                task_list[i] = t
-                break
-        
-        return task_list
+        return self.get_task(t)
+    
+    def execute_delete_task
+       
     
     def close(self) -> None:
         self._con.close()

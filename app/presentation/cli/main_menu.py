@@ -1,14 +1,14 @@
 
-from app.infrastructure.out.repositories.db_handler import DbHandler
+from app.controller.task_controller import TaskController
+from app.dto.requests.create_task_request import CreateTaskRequest
 from domain.models.task import Task
 
 class MainMenu():
     
     
-    def __init__(self):
+    def __init__(self, task_controller: TaskController):
         super().__init__()
-        self._db_h = DbHandler()
-        self._tasks_list = list()
+        self._task_controller = task_controller
     
 
     def display_menu(self) -> None:
@@ -21,7 +21,6 @@ class MainMenu():
 
     
     def display_tasks(self) -> None:
-        self._db_h.get_all_tasks(self._tasks_list)
         if len(self._tasks_list) <= 0:
             return
         for i in self._tasks_list:
@@ -31,20 +30,25 @@ class MainMenu():
     def get_input(sefl, message :str) -> None:
         user_input = input(message)
         return user_input
-
-
-    def get_task_list(self) -> None:
-        return self._tasks_list
+    
+    def get_task_controller(self) -> TaskController:
+        return self._task_controller
+    
+    def set_task_controller(self, task_controller :TaskController) -> None:
+        if not isinstance(task_controller, TaskController):
+            raise TypeError("var must be set to an task_controller")
+        self._task_controller = task_controller
+    task_controller = property(get_task_controller, set_task_controller)
     
 
     def input_matcher(self, input: str) -> bool:
         match input:
             case "1":
                 print("selection ajout de task\n")
-                nw_t = Task()
-                nw_t._set_title(self.get_input("titre de la Task\n"))
-                nw_t._set_resume(self.get_input("Description de la Task\n"))
-                self._db_h.save_task(nw_t)
+                new_title = self.get_input("titre de la Task\n")
+                new_resume = self.get_input("Description de la Task\n")
+                create_task_request = CreateTaskRequest(new_title, new_resume)
+                self._task_controller.create_new_task(create_task_request)
                 return True
             case "2":
                 print("modification de task\n")

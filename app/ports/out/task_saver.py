@@ -1,6 +1,13 @@
 
 from asyncio import Protocol
+from typing import runtime_checkable
+
+from app.dto.requests.create_task_request import CreateTaskRequest
+from app.dto.responses.task_response import TaskResponse
 
 
 class TaskSaver(Protocol):
-    def save(self, task_data: dict | TaskDTO) -> str:
+
+    @runtime_checkable
+    def save_task(self, task_data: dict | CreateTaskRequest) -> TaskResponse:
+        ...

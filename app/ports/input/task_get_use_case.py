@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
-from asyncio import Task
+from asyncio import Protocol
+from typing import runtime_checkable
+from app.domain.models.task import Task
 
-
-class TaskGetUseCase(ABC):
-    @abstractmethod
+class TaskGetUseCase(Protocol):
+    @runtime_checkable
     def get_task(self, Task : Task) -> Task:
-        pass
+        ...
