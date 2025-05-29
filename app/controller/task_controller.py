@@ -32,3 +32,6 @@ class TaskController:
     def delete_task(self,Task : Task) -> None:
         self.task_service.execute_delete_task(Task)
         return
+    
+    def close_db(self)-> None:
+        self.task_service.close_data_base()

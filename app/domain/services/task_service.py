@@ -41,3 +41,6 @@ class TaskService():
     
     def get_tasks(self) -> list[Task] | None:
         return self._task_repository.get_all_tasks()
+    
+    def close_data_base(self) -> None:
+        self._task_repository.close()

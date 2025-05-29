@@ -93,7 +93,7 @@ class MainMenu():
                 return True
             case "4":
                 print("fin du programm\n")
-                self._db_h.close()
+                self._task_controller.close_db()
                 return False
             case _:
                 print("default")
