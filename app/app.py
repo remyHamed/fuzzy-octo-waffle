@@ -14,7 +14,7 @@ class App():
         self.menu_main = MainMenu(
             self._task_controller,
             MenuDisplayer()
-            )
+        )
 
 
     def run(self) -> None:

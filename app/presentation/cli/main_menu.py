@@ -2,7 +2,6 @@
 from app.controller.task_controller import TaskController
 from app.dto.requests.create_task_request import CreateTaskRequest
 from app.presentation.cli.menu_displayer import MenuDisplayer
-from domain.models.task import Task
 
 class MainMenu():
     
@@ -53,27 +52,44 @@ class MainMenu():
         match input:
             case "1":
                 print("selection ajout de task\n")
-                new_title = self.get_input("titre de la Task\n")
-                new_resume = self.get_input("Description de la Task\n")
+                new_title = self.get_input("titre de la Task:\n")
+                new_resume = self.get_input("Description de la Task:\n")
                 create_task_request = CreateTaskRequest(new_title, new_resume)
                 self._task_controller.create_new_task(create_task_request)
                 return True
             case "2":
                 print("modification de task\n")
-                id_of_updat_task = self.get_input("selectionner l'id de l'app a modifier\n")
-                task_to_update = self._task_controller.get_one_task(id_of_updat_task)
+                id_of_updated_task = self.get_input("selectionner l'id de l'app a modifier\n")
+                task_to_update = self._task_controller.get_one_task(id_of_updated_task)
+                new_title = None
+                
                 if task_to_update == None:
                     print("la task n'existe pas")
                     return True
-                #TODO IMPLEMENT MENU UPDATE Task
+                
                 if self.yes_or_not_input_catcher("Changer le titre ?"):
-                     new_title = self.get_input("titre de la Task\n")
+                    update_title = self.get_input("titre de la Task\n")
+                
+                if self.yes_or_not_input_catcher("Changer la description ?"):
+                    update_resume = self.get_input("Description de la Task:\n")
 
+                if update_title != None:
+                    task_to_update.title = update_title
+                
+                if update_resume != None:
+                    task_to_update.resume = update_resume
+                
+                self._task_controller.update_task(task_to_update)
                 
                 return True
             case "3":
                 print("suppretion de task\n")
-                #TODO IMPLEMENT MENU DELETE Task
+                id_of_deleted_task = self.get_input("selectionner l'id de la tache à supprimer.\n")
+                task_to_delete = self._task_controller.get_one_task(id_of_deleted_task)
+                if task_to_delete == None:
+                    print("la task n'existe pas")
+                    return True
+                self._task_controller.delete_task(task_to_delete)
                 return True
             case "4":
                 print("fin du programm\n")

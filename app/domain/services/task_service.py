@@ -9,9 +9,6 @@ class TaskService():
 
     def __init__(self, task_repository: TaskRepository ):
         self._task_repository = task_repository
-
-    def get_task_repository(self) -> TaskRepository:
-        return self._task_repository
     
     def execute_task_creation(self, create_taskR_request: CreateTaskRequest) -> Task:
         self._task_repository.save_task(
@@ -35,7 +32,6 @@ class TaskService():
         )
         return
         
-    
     def execute_delete_task(self, t : Task) -> None:
         self._task_repository.execute_delete_task(t)
         return
@@ -43,4 +39,5 @@ class TaskService():
     def get_task(self, t : Task) -> Task | None:
         return self._task_repository.get_task(t)
     
-    #TODO IMPLEMENT GET ALL TASKS IN service
+    def get_tasks(self) -> list[Task] | None:
+        return self._task_repository.get_all_tasks()

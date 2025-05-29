@@ -1,4 +1,5 @@
 
+from app.domain.models.task import Task
 from app.domain.services.task_service import TaskService
 from app.dto.requests.create_task_request import CreateTaskRequest
 from app.dto.requests.update_task_request import UpdateTaskRequest
@@ -21,13 +22,13 @@ class TaskController:
         self.task_service.execute_update_task(update_task_request)
         return
     
-    def get_one_task(self)-> None:
-        self.task_service.get_task
+    def get_one_task(self, id :int)-> Task | None:
+        return self.task_service.get_task(id)
 
-    #TODO IMPLEMENT GET ALL TASKS IN CONTROLLER
-    def get_all_tasks(self) -> list:
-        return
 
-    #TODO IMPLEMENT DELETE TASKS IN CONTROLLER
-    def delete_task(self) -> None:
+    def get_all_tasks(self) -> list| None:
+        return self.task_service.get_tasks()
+
+    def delete_task(self,Task : Task) -> None:
+        self.task_service.execute_delete_task(Task)
         return
