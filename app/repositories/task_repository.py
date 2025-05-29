@@ -27,45 +27,80 @@ class TaskRepository():
         """)
         self._con.commit()
 
-    def save_task(self, task: Task) -> Task:
-        self._cur.execute(
-            "INSERT INTO tasks (title, creation_date, resume, is_done) VALUES (?, ?, ?, ?)",
-            (task.title, task.creation_date, task.resume, task.is_done)
-        )
-        self._con.commit()
-        return self._cur.fetchone()
+    def save_task(self, task: Task) -> Task | None:
+        try:
+            self._cur.execute(
+                "INSERT INTO tasks (title, creation_date, resume, is_done) VALUES (?, ?, ?, ?)",
+                (task.title, task.creation_date, task.resume, task.is_done)
+            )
+            self._con.commit()
+            task.id = self._cur.lastrowid
+            return task
+        except Exception as e:
+            print(f"Erreur lors de l'enregistrement de la tâche : {e}")
+            self._con.rollback()
+            return None
 
-    def get_all_tasks(self, tasks_list :list) -> list:
-        tasks_list.clear()
-        self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks")
-        for row in self._cur.fetchall():
-            task = TaskResponse(
+
+    def get_all_tasks(self) -> list[Task] | None:
+        try:
+            tasks_list = list()
+            self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks")
+            for row in self._cur.fetchall():
+                task = Task(
+                    id=row[0],
+                    title=row[1],
+                    creation_date=datetime.datetime.fromisoformat(row[2]),
+                    resume=row[3],
+                    is_done=bool(row[4])
+                )
+                tasks_list.append(task)
+            return tasks_list
+        except Exception as e:
+            print(f"Erreur lors de récupération des taches : {e}")
+            return None
+    
+    def get_task(self, t : Task) -> Task | None:
+        try:
+            self._cur.execute(
+                "SELECT id, title, creation_date, resume, is_done FROM tasks WHERE id=?;",
+                (t.id,)
+            )
+            row = self._cur.fetchone()
+            if row is None:
+                return None
+            
+            task = Task(
                 id=row[0],
                 title=row[1],
-                creation_date=datetime.datetime.fromisoformat(row[2]),
+                creation_date=row[2],
                 resume=row[3],
                 is_done=bool(row[4])
             )
-            tasks_list.append(task)
-            
-        return tasks_list
-    
-    def get_task(self, t: Task) -> Task:
-        self._cur.execute("SELECT id, title, creation_date, resume, is_done FROM tasks WHERE id=?;", 
-            (str(t._get_id()),)
-        )
-        t = self._cur.fetchone()
-        return t
+            return task
+        except Exception as e:
+            print(f"Erreur lors de la récupération de la tâche : {e}")
+            return None
         
-    def Update_task(self, t: Task) -> Task:
-        self._cur.execute(
-            "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
-            (t._get_title(), t._get_creation_date(), t._get_resume(), t._get_is_done(), t._get_id())
-        )
-        self._con.commit()
-        return self.get_task(t)
+    def Update_task(self, t: Task) -> Task | None:
+        try:
+            self._cur.execute(
+                "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
+                (t.title, t.creation_date, t.resume, t.is_done, t.id)
+            )
+            self._con.commit()
+            return t
+        except Exception as e:
+            print(f"Erreur update de la tâche : {e}")
+            return None
     
-    def execute_delete_task
+    def execute_delete_task(self, t: Task) -> None:
+        try:
+            self._cur.execute(" DELETE FROM tasks WHERE id = ?;", t.id)
+            return
+        except Exception as e:
+            print(f"Erreur de suppression de la tâche : {e}")
+            return None
        
     
     def close(self) -> None:

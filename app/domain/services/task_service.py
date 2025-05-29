@@ -36,9 +36,11 @@ class TaskService():
         return
         
     
-    def execute_delete_task(self, Task : Task) -> None:
-        self._task_repository.
+    def execute_delete_task(self, t : Task) -> None:
+        self._task_repository.execute_delete_task(t)
         return
     
-    def get_task(self, Task : Task) -> Task:
-        return Task()
+    def get_task(self, t : Task) -> Task | None:
+        return self._task_repository.get_task(t)
+    
+    #TODO IMPLEMENT GET ALL TASKS IN service

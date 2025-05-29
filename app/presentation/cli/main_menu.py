@@ -1,14 +1,16 @@
 
 from app.controller.task_controller import TaskController
 from app.dto.requests.create_task_request import CreateTaskRequest
+from app.presentation.cli.menu_displayer import MenuDisplayer
 from domain.models.task import Task
 
 class MainMenu():
     
     
-    def __init__(self, task_controller: TaskController):
+    def __init__(self, task_controller: TaskController, menu_displayer :MenuDisplayer):
         super().__init__()
         self._task_controller = task_controller
+        self._menu_displayer = menu_displayer
     
 
     def display_menu(self) -> None:
@@ -21,24 +23,30 @@ class MainMenu():
 
     
     def display_tasks(self) -> None:
-        if len(self._tasks_list) <= 0:
-            return
-        for i in self._tasks_list:
-            print(i, end = '\n')
+        task_list = self._task_controller.get_all_tasks()
+        self._menu_displayer.show_tasks(task_list)
     
 
     def get_input(sefl, message :str) -> None:
         user_input = input(message)
         return user_input
     
-    def get_task_controller(self) -> TaskController:
-        return self._task_controller
+
+    def yes_or_not_input_catcher(self, question: str) -> bool:
+        input = 0
+
+        while input != 1 or input != 2 :
+            user_input = input(question + "\n").strip()
+            print("1 : oui \n")
+            print("2 : non \n")
+            input = int(user_input)
+        
+        if input == 1:
+            return True
+
+        return False
     
-    def set_task_controller(self, task_controller :TaskController) -> None:
-        if not isinstance(task_controller, TaskController):
-            raise TypeError("var must be set to an task_controller")
-        self._task_controller = task_controller
-    task_controller = property(get_task_controller, set_task_controller)
+
     
 
     def input_matcher(self, input: str) -> bool:
@@ -53,15 +61,19 @@ class MainMenu():
             case "2":
                 print("modification de task\n")
                 id_of_updat_task = self.get_input("selectionner l'id de l'app a modifier\n")
-                t_to_update = Task()
-                for task in self.get_task_list():
-                    if task._get_id() == int(id_of_updat_task):
-                        t_to_update = task
-                    break
-                self._db_h.Update_task(t_to_update, self.get_task_list())
+                task_to_update = self._task_controller.get_one_task(id_of_updat_task)
+                if task_to_update == None:
+                    print("la task n'existe pas")
+                    return True
+                #TODO IMPLEMENT MENU UPDATE Task
+                if self.yes_or_not_input_catcher("Changer le titre ?"):
+                     new_title = self.get_input("titre de la Task\n")
+
+                
                 return True
             case "3":
                 print("suppretion de task\n")
+                #TODO IMPLEMENT MENU DELETE Task
                 return True
             case "4":
                 print("fin du programm\n")
