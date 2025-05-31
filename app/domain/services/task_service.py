@@ -22,11 +22,12 @@ class TaskService():
         return
     
     def execute_update_task(self, update_task_request : UpdateTaskRequest) -> Task:
-        self._task_repository.Update_task(
+        self._task_repository.update_task(
             Task(
                 update_task_request.id,
                 update_task_request.title,
                 update_task_request.creation_date,
+                update_task_request.resume,
                 update_task_request.is_done
             )
         )
@@ -36,8 +37,8 @@ class TaskService():
         self._task_repository.execute_delete_task(t)
         return
     
-    def get_task(self, t : Task) -> Task | None:
-        return self._task_repository.get_task(t)
+    def get_task(self, id: int) -> Task | None:
+        return self._task_repository.get_task(id)
     
     def get_tasks(self) -> list[Task] | None:
         return self._task_repository.get_all_tasks()

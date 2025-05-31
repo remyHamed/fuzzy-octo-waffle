@@ -32,22 +32,19 @@ class MainMenu():
     
 
     def yes_or_not_input_catcher(self, question: str) -> bool:
-        input = 0
+        input_casted = 0
 
-        while input != 1 or input != 2 :
-            user_input = input(question + "\n").strip()
-            print("1 : oui \n")
-            print("2 : non \n")
-            input = int(user_input)
+        while input_casted != 1 or input_casted != 2 :
+            user_input = input(question)
+            input_casted = int(user_input)
+            
+            if input_casted == 1:
+                return True
+            
+            if input_casted == 2:
+                return False
         
-        if input == 1:
-            return True
-
-        return False
-    
-
-    
-
+        
     def input_matcher(self, input: str) -> bool:
         match input:
             case "1":
@@ -60,17 +57,18 @@ class MainMenu():
             case "2":
                 print("modification de task\n")
                 id_of_updated_task = self.get_input("selectionner l'id de l'app a modifier\n")
-                task_to_update = self._task_controller.get_one_task(id_of_updated_task)
-                new_title = None
+                task_to_update = self._task_controller.get_one_task(int(id_of_updated_task))
+                update_title = None
+                update_resume = None
                 
                 if task_to_update == None:
                     print("la task n'existe pas")
                     return True
                 
-                if self.yes_or_not_input_catcher("Changer le titre ?"):
+                if self.yes_or_not_input_catcher("Changer le titre ?\n1 : oui \n2 : non \n"):
                     update_title = self.get_input("titre de la Task\n")
                 
-                if self.yes_or_not_input_catcher("Changer la description ?"):
+                if self.yes_or_not_input_catcher("Changer la description ?\n1 : oui \n2 : non \n"):
                     update_resume = self.get_input("Description de la Task:\n")
 
                 if update_title != None:

@@ -60,11 +60,11 @@ class TaskRepository():
             print(f"Erreur lors de récupération des taches : {e}")
             return None
     
-    def get_task(self, t : Task) -> Task | None:
+    def get_task(self, id : int) -> Task | None:
         try:
             self._cur.execute(
                 "SELECT id, title, creation_date, resume, is_done FROM tasks WHERE id=?;",
-                (t.id,)
+                (id,)
             )
             row = self._cur.fetchone()
             if row is None:
@@ -82,8 +82,9 @@ class TaskRepository():
             print(f"Erreur lors de la récupération de la tâche : {e}")
             return None
         
-    def Update_task(self, t: Task) -> Task | None:
+    def update_task(self, t: Task) -> Task | None:
         try:
+
             self._cur.execute(
                 "UPDATE tasks SET title = ?, creation_date = ?, resume = ?, is_done = ? where id = ?;",
                 (t.title, t.creation_date, t.resume, t.is_done, t.id)
@@ -91,8 +92,8 @@ class TaskRepository():
             self._con.commit()
             return t
         except Exception as e:
-            print(f"Erreur update de la tâche : {e}")
-            return None
+             print(f"Erreur update de la tâche : {e}")
+             return None
     
     def execute_delete_task(self, t: Task) -> None:
         try:
