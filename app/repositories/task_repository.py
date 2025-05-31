@@ -97,7 +97,7 @@ class TaskRepository():
     
     def execute_delete_task(self, t: Task) -> None:
         try:
-            self._cur.execute(" DELETE FROM tasks WHERE id = ?;", t.id)
+            self._cur.execute(" DELETE FROM tasks WHERE id = ?;", (t.id,))
             return
         except Exception as e:
             print(f"Erreur de suppression de la tâche : {e}")
