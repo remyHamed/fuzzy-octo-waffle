@@ -35,7 +35,7 @@ class Task:
         return self.__creation_date
     
     def _set_creation_date(self, creation_date: datetime) ->  None:
-        if not isinstance(creation_date, datetime):
+        if not isinstance(creation_date, datetime.datetime):
             raise TypeError("bar must be set to an datetime")
         self.__creation_date = creation_date
     creation_date = property(_get_creation_date, _set_creation_date)

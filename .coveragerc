@@ -2,8 +2,10 @@
 source = app
 omit = 
     */__init__.py
+    */ports/input/*.py
+    */ports/out/*.py
 
 [report]
 exclude_lines =
     pragma: no cover
-    def __repr__    
+    def __repr__

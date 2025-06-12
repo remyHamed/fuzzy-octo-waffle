@@ -2,7 +2,6 @@ from app.controller.task_controller import TaskController
 from app.domain.services.task_service import TaskService
 from app.presentation.cli.main_menu import MainMenu
 from app.presentation.cli.menu_displayer import MenuDisplayer
-from app.presentation.cli.menu_view import MenuView
 from app.repositories.task_repository import TaskRepository
 class App():
 

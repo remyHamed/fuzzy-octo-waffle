@@ -6,7 +6,7 @@ from app.dto.requests.create_task_request import CreateTaskRequest
 from app.dto.requests.update_task_request import UpdateTaskRequest
 from app.domain.services.task_service import TaskService
 
-class TestTaskService:
+class TaskServiceTest:
     @pytest.fixture
     def mock_repo(self):
         return Mock()
