@@ -63,4 +63,20 @@ class Task:
     def __str__(self):
         return "Task -> id: " + str(self._get_id()) + " title : " + self._get_title() + ", resume : " + self._get_resume() + ", is done : " + str(self._get_is_done()) 
 
+    def __eq__(self, other):
+        if not isinstance(other, Task):
+            return False
+        return (self._id == other._id and
+                self.__title == other.__title and
+                self.__resume == other.__resume and
+                self.__is_done == other.__is_done and
+                # Compare dates only if both are not None
+                (self.__creation_date == other.__creation_date 
+                 if self.__creation_date and other.__creation_date 
+                 else True))
+
+    def __repr__(self):
+        return (f"Task(id={self._id}, title='{self.__title}', "
+                f"creation_date={self.__creation_date}, "
+                f"resume='{self.__resume}', is_done={self.__is_done})")
 
