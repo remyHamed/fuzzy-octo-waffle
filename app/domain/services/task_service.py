@@ -26,6 +26,10 @@ class TaskService():
         
     
     def execute_update_task(self, update_task_request : UpdateTaskRequest) -> Task:
+        
+        if not update_task_request.title or update_task_request.title.strip() == "":
+            raise ValueError("Le titre ne peut pas être vide")
+        
         return self._task_repository.update_task(
             Task(
                 update_task_request.id,
@@ -37,6 +41,9 @@ class TaskService():
         )
         
     def execute_delete_task(self, t : Task) -> None:
+        if self.get_task(t.id) == None:
+             raise  ValueError("Tâche non trouvée")
+
         self._task_repository.execute_delete_task(t)
         return
     
