@@ -1,19 +1,48 @@
 import datetime
 from pathlib import Path
+import shutil
 import sqlite3
+import os
+import sys
+from typing import Optional
 
 from app.domain.models.task import Task
-from app.dto.requests.create_task_request import CreateTaskRequest
-from app.dto.responses.task_response import TaskResponse
+
+
 
 
 class TaskRepository():
     
     def __init__(self) :
-        self.db_path = Path("pomodoro.db")
-        self._con = sqlite3.connect(self.db_path)
-        self._cur = self._con.cursor()
+        self._con: Optional[sqlite3.Connection] = None
+        self._cur: Optional[sqlite3.Cursor] = None
+        self._initialize_database()
         self._init_db()
+
+    def _get_app_data_dir(self) -> Path:
+
+        if os.name == 'nt':
+            base_path = Path(os.getenv('LOCALAPPDATA'))
+        else:
+            base_path = Path.home() / '.local' / 'share'
+        
+        app_path = base_path / 'MonApplication'
+        app_path.mkdir(exist_ok=True, parents=True)
+        return app_path
+    
+    def _get_db_path(self) -> Path:
+        return self._get_app_data_dir() / 'app_data.db'
+    
+    def _initialize_database(self) -> None:
+        db_path = self._get_app_data_dir() / 'app_data.db'
+        
+        db_exists = db_path.exists()
+        
+        self._con = sqlite3.connect(db_path)
+        self._cur = self._con.cursor()
+        
+        if not db_exists:
+            self._init_db()
 
     def _init_db(self) -> None:
         self._cur.execute("""
