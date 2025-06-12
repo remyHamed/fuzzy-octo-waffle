@@ -1,7 +1,6 @@
 from app.controller.task_controller import TaskController
 from app.domain.services.task_service import TaskService
-from app.presentation.cli.main_menu import MainMenu
-from app.presentation.cli.menu_displayer import MenuDisplayer
+from app.presentation.graphique.main_window import MainWindow
 from app.repositories.task_repository import TaskRepository
 class App():
 
@@ -10,21 +9,9 @@ class App():
         self._task_repository = TaskRepository()
         self._task_service = TaskService(self._task_repository)
         self._task_controller = TaskController(self._task_service)
-        self.menu_main = MainMenu(
-            self._task_controller,
-            MenuDisplayer()
-        )
-
+        self.main_window = MainWindow(self._task_controller)
 
     def run(self) -> None:
-        boolean_runner = True
-        
-        while boolean_runner:
-            self.menu_main.display_tasks()
-            self.menu_main.display_menu()
-            boolean_runner = self.menu_main.input_matcher(self.menu_main.get_input("taper votre commande\n"))
-        
-        print("fin")
-
+        self.main_window.run()
 
     
