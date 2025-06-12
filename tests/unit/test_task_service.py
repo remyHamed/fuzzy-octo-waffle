@@ -40,7 +40,7 @@ class TestTaskService:
         saved_task = args[0]
         assert saved_task.title == "Test Task"
         assert saved_task.resume == "Sample resume"
-        assert saved_task.id is None  # Avant sauvegarde
+        assert saved_task.id is None 
         assert isinstance(saved_task.creation_date, datetime)
 
     def test_create_task_empty_title(self, mock_repo):
@@ -141,3 +141,59 @@ class TestTaskService:
 
    
         mock_repo.close.assert_called_once()
+
+    def test_update_task_empty_title(self, mock_repo):
+        service = TaskService(mock_repo)
+        update_request = UpdateTaskRequest(
+            id=1,
+            title="",
+            creation_date=datetime(2023, 1, 1),
+            resume="Updated resume",
+            is_done=True
+        )
+
+
+        with pytest.raises(ValueError, match="Le titre ne peut pas être vide"):
+            service.execute_update_task(update_request)
+        
+    def test_delete_nonexistent_task(self, mock_repo, sample_task):
+        service = TaskService(mock_repo)
+        mock_repo.execute_delete_task.side_effect = ValueError("Tâche non trouvée")
+
+        with pytest.raises(ValueError, match="Tâche non trouvée"):
+            service.execute_delete_task(sample_task)
+
+    def test_delete_nonexistent_task(self, mock_repo, sample_task):
+        service = TaskService(mock_repo)
+        mock_repo.execute_delete_task.side_effect = ValueError("Tâche non trouvée")
+
+        with pytest.raises(ValueError, match="Tâche non trouvée"):
+            service.execute_delete_task(sample_task)
+
+    def test_get_tasks_return_type(self, mock_repo):
+        service = TaskService(mock_repo)
+        mock_repo.get_all_tasks.return_value = []
+
+        result = service.get_tasks()
+
+        assert isinstance(result, list)
+
+    def test_create_task_title_spaces_only(self, mock_repo):
+        service = TaskService(mock_repo)
+        create_request = CreateTaskRequest(title="   ", resume="Résumé")
+
+        with pytest.raises(ValueError, match="Le titre ne peut pas être vide"):
+            service.execute_task_creation(create_request)
+
+    def test_create_task_returns_task_instance(self, mock_repo, sample_task):
+        service = TaskService(mock_repo)
+        mock_repo.save_task.return_value = sample_task
+        create_request = CreateTaskRequest(title="Test", resume="Résumé")
+
+        result = service.execute_task_creation(create_request)
+
+        assert isinstance(result, Task)
+
+
+
+

@@ -70,7 +70,6 @@ class Task:
                 self.__title == other.__title and
                 self.__resume == other.__resume and
                 self.__is_done == other.__is_done and
-                # Compare dates only if both are not None
                 (self.__creation_date == other.__creation_date 
                  if self.__creation_date and other.__creation_date 
                  else True))
