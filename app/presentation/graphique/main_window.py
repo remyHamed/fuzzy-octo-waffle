@@ -2,13 +2,15 @@ import os
 import tkinter as tk
 from app.controller.task_controller import TaskController
 from PIL import Image, ImageTk
+from app.presentation.graphique.companents.rounded_button import RoundedButton
 
 class MainWindow:
+
     def __init__(self, taskController):
         self.root = tk.Tk()
         self._taskController = taskController
 
-        self.root.title("Fenêtre avec fond dégradé")
+        self.root.title("Fuzzy-Octo-Waffle")
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -27,6 +29,9 @@ class MainWindow:
         self.update_background(self.window_width, self.window_height)
 
         self.root.bind("<Configure>", self.on_resize)
+
+        btn = RoundedButton(self.canvas, text="Clique moi", command=print("Bouton cliqué !"))
+        btn.place(x=50, y=50)
 
     def update_background(self, width, height):
         resized_image = self.original_image.resize((width, height), Image.LANCZOS)
